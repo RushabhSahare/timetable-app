@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Timetable</title>
+</head>
+<body>
+    <h1>Weekly Timetable</h1>
+
+    <!-- Add Schedule Form -->
+    <form method="POST" action="/add">
+        <label>Time:</label>
+        <input type="text" name="time" placeholder="7:00 am to 8:00 am" required>
+
+        <label>Day:</label>
+        <select name="day">
+            {% for d in days %}
+                <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Activity:</label>
+        <input type="text" name="activity" placeholder="Wake up and ready for lectures" required>
+
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Timetable Display -->
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Time</th>
+            {% for d in days %}
+                <th>{{ d }}</th>
+            {% endfor %}
+        </tr>
+        {% for time, schedule in timetable.items() %}
+        <tr>
+            <td>{{ time }}</td>
+            {% for d in days %}
+                <td>{{ schedule.get(d, "") }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
