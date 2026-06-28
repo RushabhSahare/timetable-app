@@ -1,17 +1,22 @@
-timetable-app
- # timetable-app
+# timetable-app
 
-## Install Python & pip
-sudo apt update
-sudo apt install python3 python3-pip -y
-sudo apt install python3-flask
-python3 app.py
+## Setup (Ubuntu/Debian EC2)
 
- dependencies (if needed)
+# Update packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Python and venv
+sudo apt install python3 python3-pip python3-venv -y
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 
-Run the app
+# Run the app
 python app.py
 
-Access in browser
-http://localhost:5000
+# Access in browser
+http://<EC2-public-ip>:5000
