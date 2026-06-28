@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 # In-memory timetable: {time_slot: {day: activity}}
 timetable = {}
-days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 @app.route("/")
 def home():
