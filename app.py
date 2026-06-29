@@ -61,5 +61,23 @@ def delete(time, day):
         flash(f"🗑️ Deleted activity for {time} on {day}.")
     return redirect(url_for("home"))
 
+@app.route("/search", methods=["POST"])
+def search():
+    keyword = request.form.get("keyword", "").strip()
+    day = request.form.get("day", "")
+
+    results = {}
+    if keyword:
+        for time, activities in timetable.items():
+            for d, activity in activities.items():
+                if (not day or d == day) and (keyword.lower() in activity.lower()):
+                    if time not in results:
+                        results[time] = {}
+                    results[time][d] = activity
+
+    if not results:
+        flash("No matching activities found.")
+    return render_template("index.html", timetable=results, days=days)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
