@@ -22,5 +22,21 @@ def add():
     timetable[time_slot][day] = activity
     return redirect(url_for("home"))
 
+@app.route("/edit/<time>/<day>", methods=["POST"])
+def edit(time, day):
+    new_activity = request.form.get("activity")
+    if time in timetable and day in timetable[time]:
+        timetable[time][day] = new_activity
+    return redirect(url_for("home"))
+
+@app.route("/delete/<time>/<day>", methods=["POST"])
+def delete(time, day):
+    if time in timetable and day in timetable[time]:
+        del timetable[time][day]
+        # If no activities left for that time, remove the time slot
+        if not timetable[time]:
+            del timetable[time]
+    return redirect(url_for("home"))
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
