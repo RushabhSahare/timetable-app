@@ -15,8 +15,9 @@ else:
     timetable = {}
 
 def save_timetable():
+    # Pretty-print JSON for readability
     with open(DATA_FILE, "w") as f:
-        json.dump(timetable, f)
+        json.dump(timetable, f, indent=4)
 
 @app.route("/")
 def home():
@@ -29,6 +30,10 @@ def add():
     time = request.form.get("time")
     day = request.form.get("day")
     activity = request.form.get("activity")
+
+    # Validation: prevent duplicate entry for same time/day
+    if time in timetable and day in timetable[time]:
+        return f"Error: An activity already exists for {time} on {day}. Please edit it instead."
 
     if time not in timetable:
         timetable[time] = {}
