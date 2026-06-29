@@ -1,5 +1,6 @@
 # timetable-app
 
+<<<<<<< HEAD
 ## Setup (Ubuntu/Debian EC2)
 
 # Update packages
@@ -20,3 +21,13 @@ python app.py
 
 # Access in browser
 http://<EC2-public-ip>:5000
+=======
+## Install dependencies
+pip install -r requirements.txt
+
+## Run the app
+python app.py
+
+## Access in browser
+http://localhost:5000
+>>>>>>> bd56fb119305d92ecbca6e9371fda85874fd1294
