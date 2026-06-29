@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Timetable</title>
+    <title>Weekly Timetable</title>
 </head>
 <body>
     <h1>Weekly Timetable</h1>
 
-    <!-- Add Schedule Form -->
+    <!-- Add Form -->
     <form method="POST" action="/add">
-        <label>Time:</label>
-        <input type="text" name="time" placeholder="7:00 am to 8:00 am" required>
+        <label for="time">Time:</label>
+        <input type="text" id="time" name="time" required>
 
-        <label>Day:</label>
-        <select name="day">
+        <label for="day">Day:</label>
+        <select id="day" name="day" required>
             {% for d in days %}
                 <option value="{{ d }}">{{ d }}</option>
             {% endfor %}
         </select>
 
-        <label>Activity:</label>
-        <input type="text" name="activity" placeholder="Wake up and ready for lectures" required>
+        <label for="activity">Activity:</label>
+        <input type="text" id="activity" name="activity" required>
 
         <button type="submit">Add</button>
     </form>
 
-    <!-- Timetable Display -->
+    <br><br>
+
+    <!-- Timetable Table -->
     <table border="1" cellpadding="10">
         <tr>
             <th>Time</th>
@@ -36,7 +38,20 @@
         <tr>
             <td>{{ time }}</td>
             {% for d in days %}
-                <td>{{ schedule.get(d, "") }}</td>
+                <td>
+                    {{ schedule.get(d, "") }}
+                    {% if schedule.get(d) %}
+                        <!-- Edit Form -->
+                        <form method="POST" action="/edit/{{ time }}/{{ d }}" style="display:inline;">
+                            <input type="text" name="activity" placeholder="New activity" required>
+                            <button type="submit">Edit</button>
+                        </form>
+                        <!-- Delete Form -->
+                        <form method="POST" action="/delete/{{ time }}/{{ d }}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
         {% endfor %}
