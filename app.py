@@ -20,7 +20,9 @@ def save_timetable():
 
 @app.route("/")
 def home():
-    return render_template("index.html", timetable=timetable, days=days)
+    # Sort timetable keys (times) before rendering
+    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
+    return render_template("index.html", timetable=sorted_timetable, days=days)
 
 @app.route("/add", methods=["POST"])
 def add():
