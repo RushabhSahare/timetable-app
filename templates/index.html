@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,7 +43,7 @@
                     {% if schedule.get(d) %}
                         <!-- Edit Form -->
                         <form method="POST" action="/edit/{{ time }}/{{ d }}" style="display:inline;">
-                            <input type="text" name="activity" placeholder="New activity" required>
+                            <input type="text" name="activity" value="{{ schedule.get(d) }}" required>
                             <button type="submit">Edit</button>
                         </form>
                         <!-- Delete Form -->
@@ -55,34 +54,7 @@
                 </td>
             {% endfor %}
         </tr>
-=======
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Time</th>
-        {% for d in days %}
-            <th>{{ d }}</th>
->>>>>>> bd0f4d4a00ecd3427270b11a2c0c40b918d2762d
         {% endfor %}
-    </tr>
-    {% for time, schedule in timetable.items() %}
-    <tr>
-        <td>{{ time }}</td>
-        {% for d in days %}
-            <td>
-                {{ schedule.get(d, "") }}
-                {% if schedule.get(d) %}
-                    <!-- Edit Form -->
-                    <form method="POST" action="/edit/{{ time }}/{{ d }}" style="display:inline;">
-                        <input type="text" name="activity" placeholder="New activity" required>
-                        <button type="submit">Edit</button>
-                    </form>
-                    <!-- Delete Form -->
-                    <form method="POST" action="/delete/{{ time }}/{{ d }}" style="display:inline;">
-                        <button type="submit">Delete</button>
-                    </form>
-                {% endif %}
-            </td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
+    </table>
+</body>
+</html>

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# In-memory timetable: {time_slot: {day: activity}}
+# Simple in-memory timetable
 timetable = {}
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -12,14 +12,14 @@ def home():
 
 @app.route("/add", methods=["POST"])
 def add():
-    time_slot = request.form.get("time")
+    time = request.form.get("time")
     day = request.form.get("day")
     activity = request.form.get("activity")
 
-    if time_slot not in timetable:
-        timetable[time_slot] = {}
+    if time not in timetable:
+        timetable[time] = {}
+    timetable[time][day] = activity
 
-    timetable[time_slot][day] = activity
     return redirect(url_for("home"))
 
 @app.route("/edit/<time>/<day>", methods=["POST"])
@@ -33,7 +33,7 @@ def edit(time, day):
 def delete(time, day):
     if time in timetable and day in timetable[time]:
         del timetable[time][day]
-        # If no activities left for that time, remove the time slot
+        # Remove the time slot if empty
         if not timetable[time]:
             del timetable[time]
     return redirect(url_for("home"))
