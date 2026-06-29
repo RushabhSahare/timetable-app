@@ -1,53 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Weekly Timetable</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .flash-messages { margin-bottom: 15px; }
+        .flash-messages li { list-style: none; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .flash-success { background-color: #d4edda; color: #155724; }
+        .flash-error { background-color: #f8d7da; color: #721c24; }
+    </style>
 </head>
 <body>
     <h1>Weekly Timetable</h1>
 
-    <!-- Add Form -->
-    <form method="POST" action="/add">
-        <label for="time">Time:</label>
-        <input type="text" id="time" name="time" required>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            {% if "Error" in message or "⚠️" in message %}
+              <li class="flash-error">{{ message }}</li>
+            {% else %}
+              <li class="flash-success">{{ message }}</li>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
-        <label for="day">Day:</label>
-        <select id="day" name="day" required>
-            {% for d in days %}
-                <option value="{{ d }}">{{ d }}</option>
+    <!-- Form to add activity -->
+    <form action="{{ url_for('add') }}" method="post">
+        Time: <input type="text" name="time" required>
+        Day:
+        <select name="day">
+            {% for day in days %}
+                <option value="{{ day }}">{{ day }}</option>
             {% endfor %}
         </select>
-
-        <label for="activity">Activity:</label>
-        <input type="text" id="activity" name="activity" required>
-
+        Activity: <input type="text" name="activity" required>
         <button type="submit">Add</button>
     </form>
 
-    <br><br>
-
-    <!-- Timetable Table -->
-    <table border="1" cellpadding="10">
+    <!-- Timetable table -->
+    <table>
         <tr>
             <th>Time</th>
-            {% for d in days %}
-                <th>{{ d }}</th>
+            {% for day in days %}
+                <th>{{ day }}</th>
             {% endfor %}
         </tr>
-        {% for time, schedule in timetable.items() %}
+        {% for time, activities in timetable.items() %}
         <tr>
             <td>{{ time }}</td>
-            {% for d in days %}
+            {% for day in days %}
                 <td>
-                    {{ schedule.get(d, "") }}
-                    {% if schedule.get(d) %}
-                        <!-- Edit Form -->
-                        <form method="POST" action="/edit/{{ time }}/{{ d }}" style="display:inline;">
-                            <input type="text" name="activity" value="{{ schedule.get(d) }}" required>
+                    {% if day in activities %}
+                        <form action="{{ url_for('edit', time=time, day=day) }}" method="post" style="display:inline;">
+                            <input type="text" name="activity" value="{{ activities[day] }}">
                             <button type="submit">Edit</button>
                         </form>
-                        <!-- Delete Form -->
-                        <form method="POST" action="/delete/{{ time }}/{{ d }}" style="display:inline;">
+                        <form action="{{ url_for('delete', time=time, day=day) }}" method="post" style="display:inline;">
                             <button type="submit">Delete</button>
                         </form>
                     {% endif %}

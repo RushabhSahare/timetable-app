@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import json
 import os
 
 app = Flask(__name__)
+app.secret_key = "your_secret_key_here"  # required for flash messages
 
 DATA_FILE = "timetable.json"
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -15,13 +16,11 @@ else:
     timetable = {}
 
 def save_timetable():
-    # Pretty-print JSON for readability
     with open(DATA_FILE, "w") as f:
         json.dump(timetable, f, indent=4)
 
 @app.route("/")
 def home():
-    # Sort timetable keys (times) before rendering
     sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
     return render_template("index.html", timetable=sorted_timetable, days=days)
 
@@ -31,15 +30,16 @@ def add():
     day = request.form.get("day")
     activity = request.form.get("activity")
 
-    # Validation: prevent duplicate entry for same time/day
     if time in timetable and day in timetable[time]:
-        return f"Error: An activity already exists for {time} on {day}. Please edit it instead."
+        flash(f"⚠️ An activity already exists for {time} on {day}. Please edit it instead.")
+        return redirect(url_for("home"))
 
     if time not in timetable:
         timetable[time] = {}
     timetable[time][day] = activity
     save_timetable()
 
+    flash(f"✅ Added activity for {time} on {day}.")
     return redirect(url_for("home"))
 
 @app.route("/edit/<time>/<day>", methods=["POST"])
@@ -48,6 +48,7 @@ def edit(time, day):
     if time in timetable and day in timetable[time]:
         timetable[time][day] = new_activity
         save_timetable()
+        flash(f"✏️ Updated activity for {time} on {day}.")
     return redirect(url_for("home"))
 
 @app.route("/delete/<time>/<day>", methods=["POST"])
@@ -57,6 +58,7 @@ def delete(time, day):
         if not timetable[time]:
             del timetable[time]
         save_timetable()
+        flash(f"🗑️ Deleted activity for {time} on {day}.")
     return redirect(url_for("home"))
 
 if __name__ == "__main__":
