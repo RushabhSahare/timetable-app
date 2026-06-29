@@ -9,6 +9,7 @@
         table { border-collapse: collapse; width: 100%; margin-top: 20px; }
         th, td { border: 1px solid #333; padding: 8px; text-align: center; }
         th { background-color: #f2f2f2; }
+        mark { background-color: yellow; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -55,7 +56,8 @@
         <button type="submit">Search</button>
     </form>
 
-    <!-- Timetable table -->
+    <!-- Full timetable table -->
+    <h2>Full Timetable</h2>
     <table class="mt-3">
         <tr>
             <th>Time</th>
@@ -69,6 +71,12 @@
             {% for day in days %}
                 <td>
                     {% if day in activities %}
+                        {% set activity_text = activities[day] %}
+                        {% if search_keyword and search_keyword in activity_text|lower %}
+                            <mark>{{ activity_text }}</mark>
+                        {% else %}
+                            {{ activity_text }}
+                        {% endif %}
                         <form action="{{ url_for('edit', time=time, day=day) }}" method="post" style="display:inline;">
                             <input type="text" name="activity" value="{{ activities[day] }}">
                             <button type="submit">Edit</button>

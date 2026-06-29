@@ -22,7 +22,7 @@ def save_timetable():
 @app.route("/")
 def home():
     sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
-    return render_template("index.html", timetable=sorted_timetable, days=days)
+    return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=None)
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -66,18 +66,13 @@ def search():
     keyword = request.form.get("keyword", "").strip()
     day = request.form.get("day", "")
 
-    results = {}
-    if keyword:
-        for time, activities in timetable.items():
-            for d, activity in activities.items():
-                if (not day or d == day) and (keyword.lower() in activity.lower()):
-                    if time not in results:
-                        results[time] = {}
-                    results[time][d] = activity
+    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
 
-    if not results:
-        flash("No matching activities found.")
-    return render_template("index.html", timetable=results, days=days)
+    if not keyword:
+        flash("Please enter a keyword to search.")
+        return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=None)
+
+    return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=keyword.lower())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
