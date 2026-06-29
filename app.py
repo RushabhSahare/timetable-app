@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"  # required for flash messages
@@ -19,9 +20,19 @@ def save_timetable():
     with open(DATA_FILE, "w") as f:
         json.dump(timetable, f, indent=4)
 
+def parse_time(t):
+    """Convert '6 am', '3 pm', '9:30 am' into datetime for sorting."""
+    try:
+        return datetime.strptime(t.strip().lower(), "%I %p")
+    except ValueError:
+        try:
+            return datetime.strptime(t.strip().lower(), "%I:%M %p")
+        except ValueError:
+            return datetime.max  # fallback for bad formats
+
 @app.route("/")
 def home():
-    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
+    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: parse_time(x[0])))
     return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=None)
 
 @app.route("/add", methods=["POST"])
@@ -66,7 +77,7 @@ def search():
     keyword = request.form.get("keyword", "").strip()
     day = request.form.get("day", "")
 
-    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: x[0]))
+    sorted_timetable = dict(sorted(timetable.items(), key=lambda x: parse_time(x[0])))
 
     if not keyword:
         flash("Please enter a keyword to search.")
