@@ -118,5 +118,13 @@ def import_file():
 
     return redirect(url_for("home"))
 
+@app.route("/clear", methods=["POST"])
+def clear():
+    global timetable
+    timetable = {}
+    save_timetable()
+    flash("🧹 Timetable cleared successfully.")
+    return redirect(url_for("home"))
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
