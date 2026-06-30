@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 import json
 import os
 from datetime import datetime
+from io import BytesIO
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"  # required for flash messages
@@ -84,6 +85,38 @@ def search():
         return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=None)
 
     return render_template("index.html", timetable=sorted_timetable, days=days, search_keyword=keyword.lower())
+
+@app.route("/export")
+def export():
+    if not timetable:
+        flash("No timetable data to export.")
+        return redirect(url_for("home"))
+
+    data = json.dumps(timetable, indent=4)
+    return send_file(
+        BytesIO(data.encode("utf-8")),
+        mimetype="application/json",
+        as_attachment=True,
+        download_name="timetable_backup.json"
+    )
+
+@app.route("/import", methods=["POST"])
+def import_file():
+    file = request.files.get("file")
+    if not file:
+        flash("No file selected for import.")
+        return redirect(url_for("home"))
+
+    try:
+        imported = json.load(file)
+        global timetable
+        timetable = imported
+        save_timetable()
+        flash("✅ Timetable imported successfully.")
+    except Exception as e:
+        flash(f"⚠️ Failed to import file: {e}")
+
+    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
