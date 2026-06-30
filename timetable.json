@@ -1,0 +1,50 @@
+{
+    "6 am": {
+        "Monday": "meditate"
+    },
+    "7 am": {
+        "Monday": "exercise"
+    },
+    "8 am": {
+        "Monday": "bath"
+    },
+    "8:30 am": {
+        "Monday": "breakfast"
+    },
+    "9 am": {
+        "Monday": "prepare for school"
+    },
+    "9:30 am": {
+        "Monday": "leave for school"
+    },
+    "3 pm": {
+        "Monday": "return home, eat, freshen up."
+    },
+    "4 pm": {
+        "Monday": "study maths"
+    },
+    "5:30 pm": {
+        "Monday": "PLAY TIME!"
+    },
+    "5:30 am": {
+        "Monday": "wakeup"
+    },
+    "7 pm": {
+        "Monday": "comeback and freshen up"
+    },
+    "7:30 pm": {
+        "Monday": "dinner"
+    },
+    "8:15 pm": {
+        "Monday": "study and revision"
+    },
+    "9:30 pm": {
+        "Monday": "family time"
+    },
+    "10 pm": {
+        "Monday": "freshen up for sleep"
+    },
+    "10:30 pm": {
+        "Monday": "sleep time!"
+    }
+}
